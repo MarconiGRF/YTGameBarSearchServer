@@ -11,3 +11,5 @@ Server will be listening at port 54522 and will output log to `status.log` file 
 ## Tips
 It is highly recommended to use the `pm2` process manager to recover from internal failures and automatize the service providing.
 
+## Licensing
+MIT License.
