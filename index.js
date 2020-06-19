@@ -67,7 +67,9 @@ YTGBss.post('/search', (request, response, next) => {
  */
 YTGBss.use(errorHandler);
 
-
+/**
+ * Handles the errors provided by the server, answering them accordingly to the client.
+ */
 function errorHandler(error, request, response, next) {
   logger.log({timestamp: new Date().toUTCString(), level: 'error', message: error.details})
 
