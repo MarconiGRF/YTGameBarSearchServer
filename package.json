@@ -1,0 +1,29 @@
+{
+  "name": "youtubegamebarsearchserver",
+  "version": "1.0.0",
+  "description": "A simple server to implement YTGBO's Search feature.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarconiGRF/YoutubeGameBarSearchServer.git"
+  },
+  "keywords": [
+    "ytgbo",
+    "ytgbs",
+    "ytgbss"
+  ],
+  "author": "Marconi Gomes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MarconiGRF/YoutubeGameBarSearchServer/issues"
+  },
+  "homepage": "https://github.com/MarconiGRF/YoutubeGameBarSearchServer#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "winston": "^3.2.1",
+    "ytsr": "^0.1.15"
+  }
+}
