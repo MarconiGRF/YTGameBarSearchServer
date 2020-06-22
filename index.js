@@ -13,6 +13,7 @@ var YTGBss = require('express')();
 var bodyParser = require('body-parser');
 var http = require('http').createServer(YTGBss);
 
+
 /**
  * Creates a Logger instance.
  */
@@ -25,6 +26,7 @@ const logger = winston.createLogger({
   ]
 });;
 
+
 /**
  * Listens for connections on port 54522.
  */
@@ -32,10 +34,12 @@ http.listen(54522, () => {
   logger.log({timestamp: new Date().toUTCString(), level: 'info', message: 'Ready.'});
 });
 
+
 /**
  * Parses the bodyrequest body into JSON format.
  */
 YTGBss.use(bodyParser.json());
+
 
 /**
  * Handles POST requests on /search route. 
@@ -47,7 +51,7 @@ YTGBss.use(bodyParser.json());
  * 500 INTERNAL SERVER ERROR - Something went wrong with search. The status code is returned.
  */
 YTGBss.post('/search', (request, response, next) => {
-  logger.log({timestamp: new Date().toUTCString(), level: 'http', message: 'Got search request...'});
+  logger.log({timestamp: new Date().toUTCString(), level: 'http', message: 'Got POST search request...'});
 
   if (request.body.term !== undefined) {
     doSearch(request.body.term).then( function(parsedResults) {
@@ -62,10 +66,38 @@ YTGBss.post('/search', (request, response, next) => {
   }
 });
 
+
+/**
+ * Handles GET requests on /search route. 
+ * It makes the search by the term available on the request parameters.
+ * 
+ * We can expect the following results:
+ * 200 OK - The search was sucessful. The result will be returned to requester.
+ * 400 BAD REQUEST - The request term wasn't found in the url. The status code is returned.
+ * 500 INTERNAL SERVER ERROR - Something went wrong with search. The status code is returned.
+ */
+YTGBss.get('/search/:term', (request, response, next) => {
+  logger.log({timestamp: new Date().toUTCString(), level: 'http', message: 'Got GET search request...'});
+
+  if (request.params.term !== undefined) {
+    doSearch(request.params.term).then( function(parsedResults) {
+      logger.log({level: 'info', message: 'Sucess.'})
+      response.send(parsedResults);
+    }).catch( function(errorData) {
+      next({message: '500 INTERNAL SERVER ERROR', details: errorData});
+    });
+  }
+  else {
+    next({message: '400 BAD REQUEST', details: 'Missing request parameter.'});
+  }
+});
+
+
 /**
  * Uses the specified error handler.
  */
 YTGBss.use(errorHandler);
+
 
 /**
  * Handles the errors provided by the server, answering them accordingly to the client.
@@ -80,6 +112,7 @@ function errorHandler(error, request, response, next) {
     response.status(400).send({error: 'Bad request!'})
   }
 }
+
 
 /**
  * Searchs for YouTube's videos results using node-ytsr lib.
@@ -110,6 +143,7 @@ function doSearch(term) {
     });
   });
 }
+
 
 /**
  * Parses and returns the search results with necessary information used by YTGBO.
