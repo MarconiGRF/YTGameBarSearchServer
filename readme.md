@@ -5,11 +5,11 @@ A simple server to implement YTGBO's Search feature, using node-ytsr library.
 * 1: Clone this repository.  
 * 2: On repository's root, run `npm install`.  
 * 3: To run the server, use: `node index.js`.  
-* 4: Make any request on port `54522` with `/search` endpoint:
-  * 4.1: A POST request with the following body is accepted:
+* 4: Make any request to the server:
+  * 4.1: A POST request on `http://server.address:54522/search/` with the following body is accepted:
     * 4.1.1: `{ "term": "your_search_term_here" }`.  
   * 4.2: A GET request with the following URL parameter is accepted:
-    * 4.2.1: `:54522/search/your_search_term_here`
+    * 4.2.1: `http://server.address:54522/search/your_search_term_here`
 * 5: If the search was successful, server will return an `Object[6]`:
   * 5.1: Each `object` has these attributes: 
     ```
