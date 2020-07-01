@@ -81,7 +81,6 @@ YTGBss.get('/search/:term', (request, response, next) => {
 
   if (request.params.term !== undefined) {
     handleSearch(request.params.term).then( function(parsedResults) {
-      logger.log({level: 'info', parseResults: parsedResults})
       logger.log({level: 'info', message: 'Sucess.'})
       response.send(parsedResults);
     }).catch( function(errorData) {
@@ -186,7 +185,7 @@ function parseResults(results) {
     parsed.mediaTitle = result.title;
     parsed.channelTitle = result.author.name;
     parsed.mediaUrl = result.link;
-    logger.log({timestamp: new Date().toUTCString(), level: 'info', parsed: parsed});
+    
     parsedResults.push(parsed);
   }
 
