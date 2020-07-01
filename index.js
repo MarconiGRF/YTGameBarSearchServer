@@ -54,7 +54,7 @@ YTGBss.post('/search', (request, response, next) => {
   logger.log({timestamp: new Date().toUTCString(), level: 'http', message: 'Got POST search request...'});
 
   if (request.body.term !== undefined) {
-    doSearch(request.body.term).then( function(parsedResults) {
+    handleSearch(request.body.term).then( function(parsedResults) {
       logger.log({level: 'info', message: 'Sucess.'})
       response.send(parsedResults);
     }).catch( function(errorData) {
@@ -80,7 +80,8 @@ YTGBss.get('/search/:term', (request, response, next) => {
   logger.log({timestamp: new Date().toUTCString(), level: 'http', message: 'Got GET search request...'});
 
   if (request.params.term !== undefined) {
-    doSearch(request.params.term).then( function(parsedResults) {
+    handleSearch(request.params.term).then( function(parsedResults) {
+      logger.log({level: 'info', parseResults: parsedResults})
       logger.log({level: 'info', message: 'Sucess.'})
       response.send(parsedResults);
     }).catch( function(errorData) {
@@ -119,29 +120,56 @@ function errorHandler(error, request, response, next) {
  * 
  * @param {string} term The term to search results for.
  */
-function doSearch(term) {
+function handleSearch(term) {
   return new Promise((resolve, reject) => {
     ytsr.getFilters(term, function (err, filters) {
       if (err) {
         reject(err);
       };
-  
-      filter = filters.get('Type').find(o => o.name === 'Video');
-      var options = {
-        limit: 5,
-        nextpageRef: filter.ref
+      let finalResults = [];
+
+      let videoFilter = filters.get('Type').find(o => o.name === 'Video');
+      let playlistFilter = filters.get('Type').find(o => o.name === 'Playlist');
+
+      var videoOptions = {
+        limit: 3,
+        nextpageRef: videoFilter.ref
+      };
+      var playlistOptions = {
+        limit: 3,
+        nextpageRef: playlistFilter.ref
       };
   
-      ytsr(null, options, function (err, searchResults) {
-        if (err) {
-          reject(err);
-        };
-  
-        let parsedResults = parseResults(searchResults.items);
-        resolve(parsedResults);
-      });
+      doSearch(videoOptions).then( function(videoResults) {
+        for(let videoResult of videoResults) {
+          finalResults.push(videoResult);
+        }
+        doSearch(playlistOptions).then( function(playlistResults) {
+          for(let playlistResult of playlistResults) {
+            finalResults.push(playlistResult);
+          }
+          resolve(finalResults);
+        }).catch( function(errorData) {
+          reject(errorData);
+        });
+      }).catch( function(errorData) {
+        reject(errorData);
+      });      
     });
   });
+}
+
+function doSearch(searchOptions) {
+  return new Promise( function (resolve, reject) {
+    ytsr(null, searchOptions, function (err, searchResults) {
+      if (err) {
+        reject(err);
+      };
+
+      let parsedResults = parseResults(searchResults.items);
+      resolve(parsedResults);
+    });
+  })
 }
 
 
@@ -155,10 +183,10 @@ function parseResults(results) {
 
   for (let result of results) {
     var parsed = {};
-    parsed.videoTitle = result.title;
+    parsed.mediaTitle = result.title;
     parsed.channelTitle = result.author.name;
     parsed.mediaUrl = result.link;
-
+    logger.log({timestamp: new Date().toUTCString(), level: 'info', parsed: parsed});
     parsedResults.push(parsed);
   }
 
