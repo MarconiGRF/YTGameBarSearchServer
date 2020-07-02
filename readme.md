@@ -10,7 +10,7 @@ A simple server to implement YTGBO's Search feature, using node-ytsr library.
     * 4.1.1: `{ "term": "your_search_term_here" }`.  
   * 4.2: A GET request with the following URL parameter is accepted:
     * 4.2.1: `http://server.address:54522/search/your_search_term_here`
-* 5: If the search was successful, server will return an `Object[6]`:
+* 5: If the search was successful, server will return an `Object[]`:
   * 5.1: Each `object` has these attributes: 
     ```
     {
