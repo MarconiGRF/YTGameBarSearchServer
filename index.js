@@ -3,7 +3,7 @@
  * This file represents Youtube Game Bar Overlay's Search Server. It anonymously makes searches on YouTube 
  * by the given term using TimeForANinja's node-ytsr lib, parsing its results to the minimal useful JSON
  * which will be returned to YTGBO.
- * 
+ *
  * @author: Marconi Gomes (marconi.gomes7@gmail.com)
  */
 
@@ -42,9 +42,9 @@ YTGBss.use(bodyParser.json());
 
 
 /**
- * Handles POST requests on /search route. 
+ * Handles POST requests on /search route.
  * It makes the search by the term available on the request body.
- * 
+ *
  * We can expect the following results:
  * 200 OK - The search was sucessful. The result will be returned to requester.
  * 400 BAD REQUEST - The request body wasn't in the expected format. The status code is returned.
@@ -60,7 +60,7 @@ YTGBss.post('/search', (request, response, next) => {
     }).catch( function(errorData) {
       next({message: '500 INTERNAL SERVER ERROR', details: errorData});
     });
-  } 
+  }
   else {
     next({message: '400 BAD REQUEST', details: 'Missing or malfunct body.'});
   }
@@ -68,9 +68,9 @@ YTGBss.post('/search', (request, response, next) => {
 
 
 /**
- * Handles GET requests on /search route. 
+ * Handles GET requests on /search route.
  * It makes the search by the term available on the request parameters.
- * 
+ *
  * We can expect the following results:
  * 200 OK - The search was sucessful. The result will be returned to requester.
  * 400 BAD REQUEST - The request term wasn't found in the url. The status code is returned.
@@ -116,44 +116,27 @@ function errorHandler(error, request, response, next) {
 
 /**
  * Searchs for YouTube's videos results using node-ytsr lib.
- * 
+ *
  * @param {string} term The term to search results for.
  */
 function handleSearch(term) {
   return new Promise((resolve, reject) => {
-    ytsr.getFilters(term, function (err, filters) {
-      if (err) {
-        reject(err);
-      };
-      let finalResults = [];
+    let finalResults = [];
+    let pageRef = "https://www.youtube.com/results?search_query=" + term;
 
-      let videoFilter = filters.get('Type').find(o => o.name === 'Video');
-      let playlistFilter = filters.get('Type').find(o => o.name === 'Playlist');
+    var searchOptions = {
+        limit: 10,
+        nextpageRef: pageRef
+      };
 
-      var videoOptions = {
-        limit: 3,
-        nextpageRef: videoFilter.ref
-      };
-      var playlistOptions = {
-        limit: 3,
-        nextpageRef: playlistFilter.ref
-      };
-  
-      doSearch(videoOptions).then( function(videoResults) {
-        for(let videoResult of videoResults) {
-          finalResults.push(videoResult);
-        }
-        doSearch(playlistOptions).then( function(playlistResults) {
-          for(let playlistResult of playlistResults) {
-            finalResults.push(playlistResult);
-          }
-          resolve(finalResults);
-        }).catch( function(errorData) {
-          reject(errorData);
-        });
-      }).catch( function(errorData) {
-        reject(errorData);
-      });      
+    doSearch(searchOptions).then( function(videoResults) {
+      for(let videoResult of videoResults) {
+        finalResults.push(videoResult);
+      }
+
+    resolve(finalResults);
+    }).catch( function(errorData) {
+      reject(errorData);
     });
   });
 }
@@ -174,19 +157,22 @@ function doSearch(searchOptions) {
 
 /**
  * Parses and returns the search results with necessary information used by YTGBO.
- * 
- * @param {Array} results 
+ *
+ * @param {Array} results
  */
 function parseResults(results) {
   var parsedResults = [];
 
   for (let result of results) {
     var parsed = {};
-    parsed.mediaTitle = result.title;
-    parsed.channelTitle = result.author.name;
-    parsed.mediaUrl = result.link;
-    
-    parsedResults.push(parsed);
+
+    if (result.type == "video" || result.type == "playlist") {
+      parsed.mediaTitle = result.title;
+      parsed.channelTitle = result.author.name;
+      parsed.mediaUrl = result.link;
+
+      parsedResults.push(parsed);
+    }
   }
 
   return parsedResults;
