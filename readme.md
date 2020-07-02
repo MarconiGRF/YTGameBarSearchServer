@@ -1,5 +1,5 @@
 # Youtube GameBar Search Server
-A simple server to implement YTGBO's Search feature, using node-ytsr library.
+A simple server to implement [YTGBO](https://github.com/MarconiGRF/YoutubeGameBarOverlay)'s Search feature, using node-ytsr library.
 
 ## Usage
 * 1: Clone this repository.  
@@ -24,7 +24,7 @@ A simple server to implement YTGBO's Search feature, using node-ytsr library.
 It is highly recommended to use the `pm2` process manager to recover from internal failures and automatize the service providing.
 
 ## Special Thanks
-[Guilhermeasper](https://github.com/guilhermeasper) for implementing playlists search capability.
+[Guilhermeasper](https://github.com/guilhermeasper), for implementing playlists search capability.
 
 ## Licensing
 MIT License.
