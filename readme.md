@@ -14,6 +14,7 @@ A simple server to implement [YTGBO](https://github.com/MarconiGRF/YoutubeGameBa
   * 5.1: Each `object` has these attributes: 
     ```
     {
+      "mediaType": "video_or_playlist",
       "mediaTitle": "the_search_result_video/playlist_title",
       "channelTitle": "the_search_result_channel_title",
       "mediaUrl": "the_search_result_video/playlist_url"

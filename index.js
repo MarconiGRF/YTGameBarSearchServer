@@ -167,6 +167,7 @@ function parseResults(results) {
     var parsed = {};
 
     if (result.type == "video" || result.type == "playlist") {
+      parsed.mediaType = result.type;
       parsed.mediaTitle = result.title;
       parsed.channelTitle = result.author.name;
       parsed.mediaUrl = result.link;
