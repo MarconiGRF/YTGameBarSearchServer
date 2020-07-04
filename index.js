@@ -47,7 +47,7 @@ YTGBss.get('/current/search/:term', (request, response, next) => {
   logger.log({ timestamp: new Date().toUTCString(), level: 'http', message: 'Got GET search request...' });
 
   if (request.params.term !== undefined) {
-    handleLegacySearch(request.params.term).then(function (parsedResults) {
+    handleSearch(request.params.term).then(function (parsedResults) {
       logger.log({ level: 'info', message: 'Sucess.' })
       response.send(parsedResults);
     }).catch(function (errorData) {
@@ -73,7 +73,7 @@ YTGBss.get('/search/:term', (request, response, next) => {
   logger.log({ timestamp: new Date().toUTCString(), level: 'http', message: 'Got LEGACY GET search request...' });
 
   if (request.params.term !== undefined) {
-    handleSearch(request.params.term).then(function (parsedResults) {
+    handleLegacySearch(request.params.term).then(function (parsedResults) {
       logger.log({ level: 'info', message: 'Sucess.' })
       response.send(parsedResults);
     }).catch(function (errorData) {
@@ -161,6 +161,10 @@ function handleLegacySearch(term) {
   });
 }
 
+/**
+ * 
+ * @param {*} searchOptions 
+ */
 function doSearch(searchOptions) {
   return new Promise(function (resolve, reject) {
     ytsr(null, searchOptions, function (err, searchResults) {
@@ -225,14 +229,11 @@ function parseLegacyResults(results) {
   for (let result of results) {
     var parsed = {};
 
-    if (result.type == "video" || result.type == "playlist") {
-      parsed.mediaType = result.type;
-      parsed.mediaTitle = result.title;
-      parsed.channelTitle = result.author.name;
-      parsed.mediaUrl = result.link;
+    parsed.videoTitle = result.title;
+    parsed.channelTitle = result.author.name;
+    parsed.mediaUrl = result.link;
 
-      parsedResults.push(parsed);
-    }
+    parsedResults.push(parsed);
   }
 
   return parsedResults;
