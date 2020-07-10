@@ -14,7 +14,7 @@ var http = require('http').createServer(YTGBss);
 
 
 /**
- * Creates a Logger instance.
+ * Creates a Winston Logger instance.
  */
 const logger = winston.createLogger({
   level: 'http',
@@ -93,6 +93,11 @@ YTGBss.use(errorHandler);
 
 /**
  * Handles the errors provided by the server, answering them accordingly to the client.
+ * 
+ * @param {*} error The error received from above layers.
+ * @param {*} request The source request.
+ * @param {*} response The response to be made.
+ * @param {*} next The next function to be used.
  */
 function errorHandler(error, request, response, next) {
   logger.log({ timestamp: new Date().toUTCString(), level: 'error', message: error.details })
@@ -162,8 +167,10 @@ function handleLegacySearch(term) {
 }
 
 /**
+ * Does the search using node-ytsr lib based on the given options.
+ * When finished parses and returns the results on the new YTGBO format.
  * 
- * @param {*} searchOptions 
+ * @param {*} searchOptions The given search options for ytsr.
  */
 function doSearch(searchOptions) {
   return new Promise(function (resolve, reject) {
@@ -178,7 +185,12 @@ function doSearch(searchOptions) {
   })
 }
 
-
+/**
+ * Does the search using node-ytsr lib based on the given options.
+ * When finished parses and returns the results on the legacy YTGBO format.
+ *
+ * @param {*} searchOptions The given search options for ytsr.
+ */
 function doLegacySearch(searchOptions) {
   return new Promise(function (resolve, reject) {
     ytsr(null, searchOptions, function (err, searchResults) {
@@ -194,7 +206,7 @@ function doLegacySearch(searchOptions) {
 
 
 /**
- * Parses and returns the search results with necessary information used by YTGBO.
+ * Parses and returns the search results with necessary information used by YTGBO new versoin.
  *
  * @param {Array} results
  */
@@ -219,7 +231,7 @@ function parseResults(results) {
 
 
 /**
- * Parses and returns the search results with necessary information used by YTGBOs Legacy Version.
+ * Parses and returns the search results with necessary information used by YTGBO Legacy Version.
  *
  * @param {Array} results
  */
