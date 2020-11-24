@@ -1,4 +1,5 @@
 
+const { connect } = require('http2');
 /**
  * This file represents Youtube Game Bar Overlay's Search Server. It anonymously makes searches on YouTube 
  * by the given term using TimeForANinja's node-ytsr lib, parsing its results to the minimal useful JSON
@@ -7,7 +8,7 @@
  * @author: Marconi Gomes (marconi.gomes7@gmail.com)
  */
 
-const ytsr = require('ytsr');
+const youtube = require('scrape-youtube').default;
 const winston = require('winston');
 var YTGBss = require('express')();
 var http = require('http').createServer(YTGBss);
@@ -85,7 +86,7 @@ function errorHandler(error, request, response, next) {
 }
 
 /**
- * Parses and returns the search results with necessary information used by YTGBO new versoin.
+ * Parses and returns the search results with necessary information used by YTGBO new version.
  *
  * @param {Array} results
  */
@@ -93,33 +94,26 @@ function parseResults(results) {
   var parsedResults = [];
   var itemLimit = 10;
 
-  let items = 0
-  results.forEach(result => {
-    if (items < itemLimit) {
-      if (result.type == "video") {
-        let parsed = {}
-        parsed.mediaType = "video";
-        parsed.mediaTitle = result.title;
-        parsed.channelTitle = result.author.name;
-        parsed.mediaUrl = result.link;
-  
-        parsedResults.push(parsed)
-      }
-    }
-  });
+  for(let i = 0; i < itemLimit; i++) {
+    let parsed = {}
+    parsed.mediaType = "video";
+    parsed.mediaTitle = results[i].title;
+    parsed.channelTitle = results[i].channel.name;
+    parsed.mediaUrl = results[i].link;
 
+    parsedResults.push(parsed)
+  }
   return parsedResults;
 }
 
+/**
+ * Handles the search process by the given term.
+ * @param {*} term 
+ */
 const handleSearch = async function(term) {
-    let pageRef = "https://www.youtube.com/results?search_query=" + term;
-
-    var searchOptions = {
-      limit: 10,
-      nextpageRef: pageRef
-    };
-
-    var searchResults = await ytsr(null, searchOptions);
-    var finalResults = parseResults(searchResults.items);
+    term = term.split(" ").join("");
+    var searchResults = await youtube.search(term);
+    
+    var finalResults = parseResults(searchResults.videos)
     return finalResults;
 }
