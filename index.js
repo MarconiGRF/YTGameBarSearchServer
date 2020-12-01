@@ -98,7 +98,7 @@ function parseResults(results) {
            mediaType: "video",
            mediaTitle: result.title,
            mediaUrl: result.link,
-           author: result.author.name
+           channelTitle: result.author.name
        };
        parsedResults.push(parsed);
     });
