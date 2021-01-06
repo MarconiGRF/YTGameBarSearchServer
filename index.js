@@ -95,7 +95,7 @@ function parseResults(results) {
 
     results.forEach(result => {
        let parsed = {
-           mediaType: "video",
+           mediaType: result.type,
            mediaTitle: result.title,
            mediaUrl: result.link,
            channelTitle: result.author.name
@@ -110,12 +110,31 @@ function parseResults(results) {
  * @param {*} term
  */
 const handleSearch = async function(term) {
+    term = term.replace(" ", "");
+    const videoResults = handleVideoSearch(term).catch((errorData) => { throw new Error(errorData) });
+    const playlistResults = handlePlaylistSearch(term).catch((errorData) => { throw new Error(errorData) });
+
+    return Promise.all([videoResults, playlistResults]).then((results) => {
+        return results[0].concat(results[1]);
+    });
+}
+
+const handleVideoSearch = async function (term) {
     const filters = await ytsr.getFilters(term);
     const videoFilter = filters.get('Type').find(obj =>  obj.name === 'Video');
-    const options = { limit: 7 };
+    const options = { limit: 5 };
 
     const searchResults = await ytsr(videoFilter.ref, options);
 
-    let finalResults = parseResults(searchResults.items);
-    return finalResults;
+    return parseResults(searchResults.items);
+}
+
+const handlePlaylistSearch = async function (term) {
+    const filters = await ytsr.getFilters(term);
+    const playlistFilter = filters.get('Type').find(obj =>  obj.name === 'Playlist');
+    const options = { limit: 3 };
+
+    const searchResults = await ytsr(playlistFilter.ref, options);
+
+    return parseResults(searchResults.items);
 }
