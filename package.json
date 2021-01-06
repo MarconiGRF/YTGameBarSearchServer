@@ -23,7 +23,8 @@
   "homepage": "https://github.com/MarconiGRF/YoutubeGameBarSearchServer#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "scrape-youtube": "^2.0.1",
     "winston": "^3.2.1",
-    "ytsr": "^0.1.15"
+    "ytsr": "^2.0.0-alpha.4"
   }
 }
