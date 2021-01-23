@@ -95,10 +95,11 @@ function parseResults(results) {
 
     results.forEach(result => {
        let parsed = {
+           channelTitle: result.author.name,
            mediaType: result.type,
            mediaTitle: result.title,
            mediaUrl: result.link,
-           channelTitle: result.author.name
+           thumbnail: result.thumbnail
        };
        parsedResults.push(parsed);
     });
