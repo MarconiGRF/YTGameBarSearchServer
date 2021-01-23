@@ -1,5 +1,3 @@
-
-const { connect } = require('http2');
 /**
  * This file represents Youtube Game Bar Overlay's Search Server. It anonymously makes searches on YouTube
  * by the given term using TimeForANinja's node-ytsr lib, parsing its results to the minimal useful JSON
@@ -8,6 +6,7 @@ const { connect } = require('http2');
  * @author: Marconi Gomes (marconi.gomes7@gmail.com)
  */
 
+const ytScraper = require('youtube-scrape/scraper')
 const ytsr = require('ytsr');
 const winston = require('winston');
 var YTGBss = require('express')();
@@ -91,51 +90,51 @@ function errorHandler(error, request, response, next) {
  * @param {Array} results
  */
 function parseResults(results) {
-    var parsedResults = [];
+    const parsedResults = [];
 
     results.forEach(result => {
-       let parsed = {
-           mediaType: result.type,
-           mediaTitle: result.title,
-           mediaUrl: result.link,
-           channelTitle: result.author.name,
-           thumbnail: result.thumbnail
-       };
-       parsedResults.push(parsed);
-    });
+        let parsed = {
+            mediaType: result.content.type,
+            mediaTitle: result.content.title,
+            mediaUrl: result.content.url,
+            thumbnail: result.content.thumbnail_src,
+            channelTitle: result.uploader.username
+        }
+        parsedResults.push(parsed);
+    })
     return parsedResults;
 }
 
 /**
  * Handles the search process by the given term.
+ * It searchs asynchronously 5 video results and 3 playlist results, parsing and returning them
  * @param {*} term
  */
 const handleSearch = async function(term) {
-    term = term.replace(" ", "");
-    const videoResults = handleVideoSearch(term).catch((errorData) => { throw new Error(errorData) });
-    const playlistResults = handlePlaylistSearch(term).catch((errorData) => { throw new Error(errorData) });
+    const videoResults = handleVideoSearch(term).catch(errorData => { throw new Error(errorData) });
+    const playlistResults = handlePlaylistSearch(term).catch(errorData => { throw new Error(errorData) });
 
     return Promise.all([videoResults, playlistResults]).then((results) => {
         return results[0].concat(results[1]);
     });
 }
 
+/**
+ * Handles the video search for the given term, parses and returns the results.
+ * @param {String} term - The term to be searched for video results.
+ */
 const handleVideoSearch = async function (term) {
-    const filters = await ytsr.getFilters(term);
-    const videoFilter = filters.get('Type').find(obj =>  obj.name === 'Video');
-    const options = { limit: 5 };
+    const searchResults = await ytScraper.youtube(term, 5, "video");
 
-    const searchResults = await ytsr(videoFilter.ref, options);
-
-    return parseResults(searchResults.items);
+    return parseResults(searchResults.results);
 }
 
+/**
+ * Handles the playlist search for the given term, parses and returns the results.
+ * @param {String} term - The term to be searched for playlist results.
+ */
 const handlePlaylistSearch = async function (term) {
-    const filters = await ytsr.getFilters(term);
-    const playlistFilter = filters.get('Type').find(obj =>  obj.name === 'Playlist');
-    const options = { limit: 3 };
+    const searchResults = await ytScraper.youtube(term, 3, "playlist");
 
-    const searchResults = await ytsr(playlistFilter.ref, options);
-
-    return parseResults(searchResults.items);
+    return parseResults(searchResults.results);
 }
