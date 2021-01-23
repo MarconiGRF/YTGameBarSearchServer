@@ -7,7 +7,6 @@
  */
 
 const ytScraper = require('youtube-scrape/scraper')
-const ytsr = require('ytsr');
 const winston = require('winston');
 var YTGBss = require('express')();
 var http = require('http').createServer(YTGBss);
