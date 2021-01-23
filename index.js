@@ -98,7 +98,8 @@ function parseResults(results) {
            mediaType: result.type,
            mediaTitle: result.title,
            mediaUrl: result.link,
-           channelTitle: result.author.name
+           channelTitle: result.author.name,
+           thumbnail: result.thumbnail
        };
        parsedResults.push(parsed);
     });
