@@ -2,8 +2,9 @@
   "name": "youtubegamebarsearchserver",
   "version": "1.0.0",
   "description": "A simple server to implement YTGBO's Search feature.",
-  "main": "index.js",
+  "main": "ytgbss.js",
   "scripts": {
+    "start": "node ytgbss.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
