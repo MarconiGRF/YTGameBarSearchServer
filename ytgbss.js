@@ -20,7 +20,6 @@ const logger = winston.createLogger({
     level: 'http',
     format: winston.format.prettyPrint(),
     transports: [
-        new winston.transports.File({ filename: 'status.log' }),
         new winston.transports.Console()
     ]
 });
