@@ -1,5 +1,5 @@
-# Youtube GameBar Search Server
-A simple server to implement [YTGBO](https://github.com/MarconiGRF/YoutubeGameBarOverlay)'s Search feature, using [youtube-scrape](https://github.com/HermanFassett/youtube-scrape) library.
+# YT GameBar Search Server
+A simple server to implement [YTGBO](https://github.com/MarconiGRF/YTGameBarOverlay)'s Search feature, using [scrape](https://github.com/HermanFassett/youtube-scrape) library.
 
 ## Usage
 * 1: Clone this repository.  
@@ -26,7 +26,7 @@ It is highly recommended to use the `pm2` process manager to recover from intern
 
 ## Special Thanks
 * [Guilhermeasper](https://github.com/guilhermeasper), for implementing playlists search capability.
-* [HermanFassett](https://github.com/HermanFassett), for the open-source youtube-scrape library.
+* [HermanFassett](https://github.com/HermanFassett), for the open-source scrape library.
 
 ## Licensing
 MIT License.

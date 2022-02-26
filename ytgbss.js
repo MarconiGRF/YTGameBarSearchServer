@@ -1,5 +1,5 @@
 /**
- * This file represents Youtube Game Bar Overlay's Search Server. It anonymously makes searches on YouTube
+ * This file represents YTGameBar Overlay's Search Server. It anonymously makes searches on the web
  * by the given term using TimeForANinja's node-ytsr lib, parsing its results to the minimal useful JSON
  * which will be returned to YTGBO.
  *
