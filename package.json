@@ -26,6 +26,6 @@
     "express": "^4.17.1",
     "request": "^2.88.2",
     "winston": "^3.2.1",
-    "youtube-scrape": "git+https://github.com/MarconiGRF/youtube-scrape.git"
+    "youtube-scrape": "github:MarconiGRF/youtube-scrape#master"
   }
 }

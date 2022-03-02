@@ -1,4 +1,5 @@
 node_modules/*
 .vs/
 .vscode/
+.idea/
 status.log
