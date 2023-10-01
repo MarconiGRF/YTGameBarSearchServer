@@ -1,3 +1,7 @@
+# Deprecation notice
+This project is now deprecated due to the difficulty of interacting with _the video provider APIs_. The limited search quota is not enough to fullfil global usage of the app and because of this it lacks one of the core features of the app, the search feature. Unfortunately is not of my interest to maintain or update the project anymore. Feel free to clone, redistribute or share the project since it is not licensed in any form.
+
+
 # YT GameBar Search Server
 A simple server to implement [YTGBO](https://github.com/MarconiGRF/YTGameBarOverlay)'s Search feature, using [scrape](https://github.com/HermanFassett/youtube-scrape) library.
 
